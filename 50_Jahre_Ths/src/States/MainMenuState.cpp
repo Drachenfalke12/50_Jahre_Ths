@@ -18,7 +18,12 @@ namespace sse
 		m_Button.setTexture(m_data->assets.GetTexture("Buttons"));
 		m_Button.setScale({ 4,4 });
 		m_Button.setTextureRect(sf::IntRect(0, 0, 64, 32));
-		m_Button.setPosition({ m_data->window.getSize().x / 2 - m_Button.getGlobalBounds().width / 2, m_data->window.getSize().y / 2 - m_Button.getGlobalBounds().height / 2});	
+		m_Button.setPosition({ m_data->window.getSize().x / 2 - m_Button.getGlobalBounds().width * 2, m_data->window.getSize().y / 2 - m_Button.getGlobalBounds().height / 2});	
+
+		m_Button1.setTexture(m_data->assets.GetTexture("Buttons"));
+		m_Button1.setScale({ 4,4 });
+		m_Button1.setTextureRect(sf::IntRect(0, 0, 64, 32));
+		m_Button1.setPosition({ m_data->window.getSize().x / 2 + m_Button1.getGlobalBounds().width , m_data->window.getSize().y / 2 - m_Button1.getGlobalBounds().height / 2 });
 
 		//Sound
 		m_FocussedSound.setBuffer(m_data->assets.GetSoundBuffer("focussed"));
@@ -30,6 +35,11 @@ namespace sse
 		m_ButtonText.setString("Start");
 		m_ButtonText.setCharacterSize(35);
 		m_ButtonText.setPosition(m_Button.getPosition().x + m_Button.getGlobalBounds().width / 2 - m_ButtonText.getGlobalBounds().width / 2, m_Button.getPosition().y + m_Button.getGlobalBounds().height / 2 - m_ButtonText.getGlobalBounds().height / 1.5f);
+
+		m_ButtonText1.setFont(m_data->assets.GetFont("font"));
+		m_ButtonText1.setString("Weiter");
+		m_ButtonText1.setCharacterSize(35);
+		m_ButtonText1.setPosition(m_Button1.getPosition().x + m_Button1.getGlobalBounds().width / 2 - m_ButtonText1.getGlobalBounds().width / 2, m_Button1.getPosition().y + m_Button1.getGlobalBounds().height / 2 - m_ButtonText1.getGlobalBounds().height / 1.5f);
 
 		//Text oben
 		m_Aufforderung.setFont(m_data->assets.GetFont("font"));
@@ -88,7 +98,7 @@ namespace sse
 						}
 					}
 				}
-			}			
+			}				
 		}
 		return true;
 	}
@@ -140,6 +150,35 @@ namespace sse
 			IsFocussedSoundPlayed = false;
 		}
 
+		if (m_data->input.IsCursorOnSprite(m_Button1, m_data->window)) //Hover-Event
+		{
+			m_Button1.setTextureRect(sf::IntRect(64, 0, 64, 32));
+			if (!IsFocussedSoundPlayed1)
+			{
+				m_FocussedSound.play();
+				IsFocussedSoundPlayed1 = true;
+			}
+			if (m_data->input.IsSpriteClicked(m_Button1, sf::Mouse::Left, m_data->window)) //Clickevent
+			{
+				m_Button1.setTextureRect(sf::IntRect(128, 0, 64, 32));
+				if (!IsKlickSoundPlayed1)
+				{
+					m_KlickSound.play();
+					IsKlickSoundPlayed1 = true;
+					//Gehe zum GameState
+				}
+			}
+			else
+			{
+				IsKlickSoundPlayed1 = false;
+			}
+		}
+		else
+		{
+			m_Button1.setTextureRect(sf::IntRect(0, 0, 64, 32));
+			IsFocussedSoundPlayed1 = false;
+		}
+
 		return true;
 	}
 
@@ -148,7 +187,11 @@ namespace sse
 		m_data->window.clear();
 
 		m_data->window.draw(m_Button);
+		m_data->window.draw(m_Button1);
+
 		m_data->window.draw(m_ButtonText);
+		m_data->window.draw(m_ButtonText1);
+
 		m_data->window.draw(m_Aufforderung);
 		m_data->window.draw(m_name);
 		
